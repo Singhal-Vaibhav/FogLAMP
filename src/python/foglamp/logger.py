@@ -24,6 +24,10 @@ r"""Send log entries to /var/log/syslog
 CONSOLE = 1
 """Send log entries to STDOUT"""
 
+PERFLOG = 2
+"""Send log entries to perf.log"""
+
+level_info = logging.INFO
 
 def setup(logger_name: str = None,
           destination: int = SYSLOG,
@@ -68,6 +72,8 @@ def setup(logger_name: str = None,
 
     if destination == SYSLOG:
         handler = SysLogHandler(address='/dev/log')
+    elif destination == PERFLOG:
+        handler = logging.FileHandler('perf.log')
     elif destination == CONSOLE:
         handler = logging.StreamHandler(sys.stdout)
     else:
@@ -75,7 +81,7 @@ def setup(logger_name: str = None,
 
     # TODO: Consider using %r with message when using syslog .. \n looks better than #
     formatter = logging.Formatter(
-        fmt='[FOGLAMP] %(asctime)s - %(levelname)s :: %(module)s: %(message)s',
+        fmt='[FOGLAMP] | %(asctime)s.%(msecs)03d | %(levelname)s | %(module)s | %(message)s',
         datefmt='%m-%d-%Y %H:%M:%S')
 
     handler.setFormatter(formatter)

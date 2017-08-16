@@ -19,7 +19,9 @@ import aiopg.sa
 import sqlalchemy as sa
 import asyncio
 from sqlalchemy.dialects.postgresql import JSONB
+from datetime import datetime
 from foglamp import statistics
+from foglamp import logger
 
 """CoAP handler for coap://other/sensor_readings URI
 """
@@ -55,6 +57,8 @@ class SensorValues(aiocoap.resource.Resource):
         asyncio.ensure_future(self._update_statistics())
         self._num_readings = 0
         self._num_discarded_readings = 0
+
+        self._logger = logger.setup(logger_name=__name__, destination=logger.PERFLOG, level=logger.level_info)
 
     def register_handlers(self, resource_root, uri):
         """Registers other/sensor_values URI"""
@@ -98,6 +102,7 @@ class SensorValues(aiocoap.resource.Resource):
             payload = loads(request.payload)
             asset = payload['asset']
             timestamp = payload['timestamp']
+            self._logger.info("Tx: {} Received | Sender_Ts | {} | Received_Ts | {}".format(payload.get('key'), timestamp, datetime.now()))
         except:
             self._num_discarded_readings += 1
             return aiocoap.Message(payload=''.encode("utf-8"), code=aiocoap.numbers.codes.Code.BAD_REQUEST)
