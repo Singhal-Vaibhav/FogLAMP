@@ -1,0 +1,21 @@
+{
+  "name": "fogb",
+  "version": "0.0.1",
+  "description": "create sample readings and send to FogLAMP",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "fogbench",
+    "FogLAMP"
+  ],
+  "author": "Praveen Garg",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "async": "^2.5.0",
+    "cbor": "^3.0.3",
+    "coap": "^0.21.0",
+    "uuid": "^3.1.0"
+  }
+}
