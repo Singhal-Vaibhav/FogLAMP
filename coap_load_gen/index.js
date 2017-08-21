@@ -15,6 +15,11 @@ function sendCoap(payload) {
 
     var req = coap.request(obj)
     req.write(cbor.encode(payload));
+    // handle timeout requests gracefully
+    req.on('error', function( error ) {
+        //console.error( error );
+        totalTimeouts++
+      });
     // Uncomment this code if you want response from the receiver
     // req.on('response', function (res) {
     //  res.pipe(process.stdout)
@@ -50,7 +55,7 @@ function runF(seconds) {
                 dt = new Date();
          
                 if((dt - startTime)/1000 > seconds){ // seconds
-                    console.log("Exiting at:", dt, " | Sent: ", totalSent, "meesages.")
+                    console.log("Exiting at:", dt, " | Sent: ", totalSent, "meesages." , " | Timeout: ", totalTimeouts, "meesages.")
                     process.exit()
                 }
             }    
@@ -93,6 +98,7 @@ function run() {
 }
 
 totalSent = 0
+totalTimeouts = 0
 startTime =  new Date()
 console.log("Started at:", startTime)
 
