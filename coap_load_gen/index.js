@@ -27,7 +27,13 @@ function sendCoap(payload) {
     //      //console.log("sent to CoAP")
     //  })
     // })
+    req.on('response', function (res) {
+        //console.log("Response from client::", res.code)
+        if(res.code == '2.03') {
+            totalAck++
+        }
 
+    });
     req.end()
 }
 
@@ -55,7 +61,8 @@ function runF(seconds) {
                 dt = new Date();
          
                 if((dt - startTime)/1000 > seconds){ // seconds
-                    console.log("Exiting at:", dt, " | Sent: ", totalSent, "meesages." , " | Timeout: ", totalTimeouts, "meesages.")
+                    console.log("Exiting at:", dt)
+                    console.log("Sent: ", totalSent, "meesages." , " | Timeout: ", totalTimeouts, "meesages." , " | Reveived ACK for: ", totalAck, "meesages.")
                     process.exit()
                 }
             }    
@@ -99,6 +106,7 @@ function run() {
 
 totalSent = 0
 totalTimeouts = 0
+totalAck = 0
 startTime =  new Date()
 console.log("Started at:", startTime)
 
